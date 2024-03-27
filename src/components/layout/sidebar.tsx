@@ -34,14 +34,13 @@ const Sidebar = ({ role }: SidebarProps) => {
   const [navigation, setNavigation] = useState<NavigationItem[]>([]);
 
   useEffect(() => {
-    // Update navigation based on role
     setNavigation(role === 'admin' ? navigationAdmin : navigationUser);
   }, [role]);
 
   return (
     <div>
       <button
-        className="text-2xl text-gray-500 absolute top-5 left-5 md:hidden"
+        className="text-2xl text-gray-500 absolute top-5 left-10 md:hidden"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <IoIosClose /> : <FiMenu />}
@@ -49,7 +48,7 @@ const Sidebar = ({ role }: SidebarProps) => {
 
       <div className={
       `fixed inset-y-0 left-0 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
-      transition duration-200 ease-in-out md:translate-x-0 md:static md:flex md:flex-col 
+      transition duration-0 ease-in-out md:translate-x-0 md:static md:flex md:flex-col 
       bg-white text-gray-900 w-[200px] z-30 justify-between h-full`
       }>
         <div>
@@ -71,8 +70,8 @@ const Sidebar = ({ role }: SidebarProps) => {
               <span className="font-medium">Logout</span>
           </Link>
         </div>
-
       </div>
+      
       {isOpen && (
         <div className="fixed inset-0 bg-black opacity-50 z-20" onClick={() => setIsOpen(false)}></div>
       )}

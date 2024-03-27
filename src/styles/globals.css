@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* CustomStyles.css */
+.custom-border-color .tab:checked+.tab-content {
+    border-color: #4ade80;
+    /* Example: A green border color */
+}
