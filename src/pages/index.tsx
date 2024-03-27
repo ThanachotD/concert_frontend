@@ -1,19 +1,26 @@
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import Layout from '@/components/layout/layout';
-import { FcMenu } from "react-icons/fc";
-import { ReactElement, useState } from 'react';
+import AdminHome from '@/pages/admin/home';
+import UserHome from '@/pages/user/home';
 
 export default function Home() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedRole = localStorage.getItem('role');
+    if (savedRole === 'user') {
+      setRole('user');
+    } else {
+      setRole('admin');
+    }
+  }, []);
+
   return (
     <>
       <Head>
         <title>Concerts App</title>
       </Head>
-      <Layout role="admin">
-        <h1>Welcome to the Dashboarssssd</h1>
-      </Layout>
+      {role === 'user' ? <UserHome /> : <AdminHome />}
     </>
   );
 }

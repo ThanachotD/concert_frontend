@@ -1,18 +1,42 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FiHome, FiMenu } from 'react-icons/fi';
 import { GoHistory } from 'react-icons/go';
 import { TbSwitchVertical } from 'react-icons/tb';
 import { IoIosLogOut, IoIosClose } from 'react-icons/io';
 
-const navigation = [
-  { name: 'Home', href: '/', icon: <FiHome/> },
-  { name: 'History', href: '/history', icon: <GoHistory/> },
-  { name: 'Switch to user', href: '/users', icon: <TbSwitchVertical/> },
+// Define an interface for navigation items
+interface NavigationItem {
+  id: number;
+  name: string;
+  href: string;
+  icon: JSX.Element;
+}
+
+// Define an interface for the Sidebar props
+interface SidebarProps {
+  role: 'user' | 'admin';
+}
+
+// Define the navigation items for user and admin
+const navigationUser: NavigationItem[] = [
+  { id: 3, name: 'Switch to Admin', href: '/admin/home', icon: <TbSwitchVertical/> },
 ];
 
-const Sidebar = () => {
+const navigationAdmin: NavigationItem[] = [
+  { id: 1, name: 'Home', href: '/admin/home', icon: <FiHome/> },
+  { id: 2, name: 'History', href: '/admin/history', icon: <GoHistory/> },
+  { id: 4, name: 'Switch to User', href: '/user/home', icon: <TbSwitchVertical/> },
+];
+
+const Sidebar = ({ role }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [navigation, setNavigation] = useState<NavigationItem[]>([]);
+
+  useEffect(() => {
+    // Update navigation based on role
+    setNavigation(role === 'admin' ? navigationAdmin : navigationUser);
+  }, [role]);
 
   return (
     <div>
@@ -30,16 +54,16 @@ const Sidebar = () => {
       }>
         <div>
           <div className="flex items-center justify-center h-20">
-          <h1 className="text-2xl font-semibold">Admin</h1>
-        </div>
-        <nav className="flex flex-col p-4">
-          {navigation.map((item) => (
-            <Link href={item.href} key={item.name} className="flex items-center p-2 my-2 transition-colors duration-200 justify-start hover:bg-blue-50 text-gray-900">
-                <span className="text-lg mr-2">{item.icon}</span>
-                <span className="font-medium">{item.name}</span>              
-            </Link>
-          ))}
-        </nav>
+            <h1 className="text-2xl font-semibold">{role.toUpperCase()}</h1>
+          </div>
+          <nav className="flex flex-col p-4">
+            {navigation.map((item) => (
+              <Link href={item.href} key={item.id} className="flex items-center p-2 my-2 transition-colors duration-200 justify-start hover:bg-blue-50 text-gray-900">
+                  <span className="text-lg mr-2">{item.icon}</span>
+                  <span className="font-medium">{item.name}</span>              
+              </Link>
+            ))}
+          </nav>
         </div>
         <div className="mt-auto p-4">
           <Link href="/logout" className="flex items-center p-2 my-2 transition-colors duration-200 justify-start hover:bg-blue-50 text-gray-900">
