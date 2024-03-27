@@ -8,7 +8,7 @@ export default function Home() {
         <title>Concerts App</title>
       </Head>
       <main className='bg-gray-100 w-full h-screen'>
-        <Sidebar />
+        <Sidebar role="admin"/>
         
       </main>
     </>

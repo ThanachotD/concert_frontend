@@ -9,7 +9,11 @@ import { IoIosLogOut } from "react-icons/io";
 interface SidebarItemProps {
   onClick: () => void;
   label: string;
-  icon: ReactElement; // Type for icon prop
+  icon: ReactElement;
+}
+
+interface SidebarProps {
+  role: 'user' | 'admin';
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({ onClick, label, icon }) => (
@@ -21,7 +25,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ onClick, label, icon }) => (
   </div>
 );
 
-const Sidebar = () => {
+const Sidebar: React.FC<SidebarProps> = ({ role }) => {
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -35,28 +39,35 @@ const Sidebar = () => {
           <div className='justify-between'>
             <div className="text-gray-900 text-xl">
               <div className="p-2.5 mt-1 pl-5 flex items-center">
-                <h1 className="font-bold text-[30px] ml-3">Admin</h1>
+                <h1 className="font-bold text-[30px] ml-3">{role === 'admin' ? 'Admin' : 'User'}</h1>
                 <BiX className="cursor-pointer ml-auto lg:hidden" onClick={toggleSidebar} />
               </div>
             </div>
-            {/* Sidebar Items */}
-            <div className="flex flex-col justify-between h-full h-[900px]">
-            <div>
-              <SidebarItem label="Home" icon={<FiHome />} onClick={toggleDropdown} />
-              <SidebarItem label="Profile" icon={<GoHistory />} onClick={toggleDropdown} />
-              <SidebarItem label="Switch to User" icon={<TbSwitchVertical />} onClick={toggleDropdown} />
-            </div>
-              <SidebarItem label="Logout" icon={<IoIosLogOut/>} onClick={toggleDropdown} />
-            </div>
+            {role === 'admin'&&
+              <div className="flex flex-col justify-between h-full h-screen">
+                <div>
+                  <SidebarItem label="Home" icon={<FiHome />} onClick={toggleDropdown} />
+                  <SidebarItem label="Profile" icon={<GoHistory />} onClick={toggleDropdown} />
+                  <SidebarItem label="Switch to User" icon={<TbSwitchVertical />} onClick={toggleDropdown} />
+                </div>
+                <SidebarItem label="Logout" icon={<IoIosLogOut />} onClick={toggleDropdown} />
+              </div>
+            }
+            {role === 'user'&&
+              <div className="flex flex-col justify-between h-full h-screen">
+                <SidebarItem label="Switch to Admin" icon={<TbSwitchVertical />} onClick={toggleDropdown} />
+                <SidebarItem label="Logout" icon={<IoIosLogOut />} onClick={toggleDropdown} />
+              </div>
+            }
           </div>
         </div>
       </div>
-
       <div className={`p-8 left-0 fixed text-xl text-gray-900 ${!isSidebarOpen ? '' : 'hidden'}`}>
         <FcMenu className="cursor-pointer text-blue-600" onClick={toggleSidebar} />
       </div>
     </>
   );
 };
+
 
 export default Sidebar;
