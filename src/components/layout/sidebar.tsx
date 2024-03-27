@@ -17,57 +17,40 @@ interface SidebarProps {
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({ onClick, label, icon }) => (
-  <div
-    className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-50 text-gray-900"
-    onClick={onClick}>
+  <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-50 text-gray-900" onClick={onClick}>
     {icon} {/* Display the icon */}
     <span className="text-[15px] ml-4">{label}</span>
   </div>
 );
 
 const Sidebar: React.FC<SidebarProps> = ({ role }) => {
-  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  const toggleDropdown = () => setIsSubmenuOpen(!isSubmenuOpen);
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
     <>
-      <div className={`sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[200px] overflow-y-auto text-center bg-white ${isSidebarOpen ? '' : 'hidden'}`}>
-        <div className='flex flex-col'>
-          <div className='justify-between'>
-            <div className="text-gray-900 text-xl">
-              <div className="p-2.5 mt-1 pl-5 flex items-center">
-                <h1 className="font-bold text-[30px] ml-3">{role === 'admin' ? 'Admin' : 'User'}</h1>
-                <BiX className="cursor-pointer ml-auto lg:hidden" onClick={toggleSidebar} />
-              </div>
+      <div className={`fixed top-0 bottom-0 lg:left-0 w-[200px] overflow-y-auto text-center bg-white ${isSidebarOpen ? 'block' : 'hidden'}`}>
+        <div className="flex flex-col h-screen justify-between">
+          <div>
+            <div className="text-gray-900 text-xl p-2.5 mt-1 pl-5 flex items-center pb-2">
+              <h1 className="font-bold text-[30px] ml-3">{role === 'admin' ? 'Admin' : 'User'}</h1>
+              <BiX className="cursor-pointer ml-auto lg:hidden" onClick={toggleSidebar} />
             </div>
-            {role === 'admin'&&
-              <div className="flex flex-col justify-between h-full h-screen">
-                <div>
-                  <SidebarItem label="Home" icon={<FiHome />} onClick={toggleDropdown} />
-                  <SidebarItem label="Profile" icon={<GoHistory />} onClick={toggleDropdown} />
-                  <SidebarItem label="Switch to User" icon={<TbSwitchVertical />} onClick={toggleDropdown} />
-                </div>
-                <SidebarItem label="Logout" icon={<IoIosLogOut />} onClick={toggleDropdown} />
-              </div>
-            }
-            {role === 'user'&&
-              <div className="flex flex-col justify-between h-full h-screen">
-                <SidebarItem label="Switch to Admin" icon={<TbSwitchVertical />} onClick={toggleDropdown} />
-                <SidebarItem label="Logout" icon={<IoIosLogOut />} onClick={toggleDropdown} />
-              </div>
-            }
+            {/* Common Items */}
+            {role === 'admin' && <SidebarItem label="Home" icon={<FiHome />} onClick={toggleSidebar} />}
+            {role === 'admin' && <SidebarItem label="Profile" icon={<GoHistory />} onClick={toggleSidebar} />}
+            <SidebarItem label={role === 'admin' ? "Switch to User" : "Switch to Admin"} icon={<TbSwitchVertical />} onClick={toggleSidebar} />
+          </div>
+          <div className='mb-4'>
+            <SidebarItem label="Logout" icon={<IoIosLogOut />} onClick={toggleSidebar} />
           </div>
         </div>
       </div>
-      <div className={`p-8 left-0 fixed text-xl text-gray-900 ${!isSidebarOpen ? '' : 'hidden'}`}>
+      <div className={`p-8 left-0 fixed text-xl text-gray-900 ${isSidebarOpen ? 'hidden' : 'block'}`}>
         <FcMenu className="cursor-pointer text-blue-600" onClick={toggleSidebar} />
       </div>
     </>
   );
 };
-
 
 export default Sidebar;
