@@ -1,55 +1,58 @@
-import { ReactElement, useState } from 'react';
-import { BiX } from 'react-icons/bi';
-import { FcMenu } from "react-icons/fc";
-import { FiHome } from "react-icons/fi";
-import { GoHistory } from "react-icons/go";
-import { TbSwitchVertical } from "react-icons/tb";
-import { IoIosLogOut } from "react-icons/io";
+import { useState } from 'react';
+import Link from 'next/link';
+import { FiHome, FiMenu } from 'react-icons/fi';
+import { GoHistory } from 'react-icons/go';
+import { TbSwitchVertical } from 'react-icons/tb';
+import { IoIosLogOut, IoIosClose } from 'react-icons/io';
 
-interface SidebarItemProps {
-  onClick: () => void;
-  label: string;
-  icon: ReactElement;
-}
+const navigation = [
+  { name: 'Home', href: '/', icon: <FiHome/> },
+  { name: 'History', href: '/history', icon: <GoHistory/> },
+  { name: 'Switch to user', href: '/users', icon: <TbSwitchVertical/> },
+];
 
-interface SidebarProps {
-  role: 'user' | 'admin';
-}
-
-const SidebarItem: React.FC<SidebarItemProps> = ({ onClick, label, icon }) => (
-  <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-50 text-gray-900" onClick={onClick}>
-    {icon} {/* Display the icon */}
-    <span className="text-[15px] ml-4">{label}</span>
-  </div>
-);
-
-const Sidebar: React.FC<SidebarProps> = ({ role }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
-      <div className={`fixed top-0 bottom-0 lg:left-0 w-[200px] overflow-y-auto text-center bg-white ${isSidebarOpen ? 'block' : 'hidden'}`}>
-        <div className="flex flex-col h-screen justify-between">
-          <div>
-            <div className="text-gray-900 text-xl p-2.5 mt-1 pl-5 flex items-center pb-2">
-              <h1 className="font-bold text-[30px] ml-3">{role === 'admin' ? 'Admin' : 'User'}</h1>
-              <BiX className="cursor-pointer ml-auto lg:hidden" onClick={toggleSidebar} />
-            </div>
-            {/* Common Items */}
-            {role === 'admin' && <SidebarItem label="Home" icon={<FiHome />} onClick={toggleSidebar} />}
-            {role === 'admin' && <SidebarItem label="Profile" icon={<GoHistory />} onClick={toggleSidebar} />}
-            <SidebarItem label={role === 'admin' ? "Switch to User" : "Switch to Admin"} icon={<TbSwitchVertical />} onClick={toggleSidebar} />
-          </div>
-          <div className='mb-4'>
-            <SidebarItem label="Logout" icon={<IoIosLogOut />} onClick={toggleSidebar} />
-          </div>
+    <div>
+      <button
+        className="text-2xl text-gray-500 absolute top-5 left-5 md:hidden"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {isOpen ? <IoIosClose /> : <FiMenu />}
+      </button>
+
+      <div className={
+      `fixed inset-y-0 left-0 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
+      transition duration-200 ease-in-out md:translate-x-0 md:static md:flex md:flex-col 
+      bg-white text-gray-900 w-[200px] z-30 justify-between h-full`
+      }>
+        <div>
+          <div className="flex items-center justify-center h-20">
+          <h1 className="text-2xl font-semibold">Admin</h1>
         </div>
+        <nav className="flex flex-col p-4">
+          {navigation.map((item) => (
+            <Link href={item.href} key={item.name} className="flex items-center p-2 my-2 transition-colors duration-200 justify-start hover:bg-blue-50 text-gray-900">
+                <span className="text-lg mr-2">{item.icon}</span>
+                <span className="font-medium">{item.name}</span>              
+            </Link>
+          ))}
+        </nav>
+        </div>
+        <div className="mt-auto p-4">
+          <Link href="/logout" className="flex items-center p-2 my-2 transition-colors duration-200 justify-start hover:bg-blue-50 text-gray-900">
+              <span className="text-lg mr-2"><IoIosLogOut /></span>
+              <span className="font-medium">Logout</span>
+          </Link>
+        </div>
+
       </div>
-      <div className={`p-8 left-0 fixed text-xl text-gray-900 ${isSidebarOpen ? 'hidden' : 'block'}`}>
-        <FcMenu className="cursor-pointer text-blue-600" onClick={toggleSidebar} />
-      </div>
-    </>
+      {isOpen && (
+        <div className="fixed inset-0 bg-black opacity-50 z-20" onClick={() => setIsOpen(false)}></div>
+      )}
+    </div>
   );
 };
 
