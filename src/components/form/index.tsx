@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { IoSaveOutline } from "react-icons/io5";
 import { CiUser } from "react-icons/ci";
+import { BASE_PATH } from '@/utils';
 
 interface InfoConcert {
   name: string;
@@ -11,21 +12,46 @@ interface InfoConcert {
 const Card = () => {
   const [concertInfo, setConcertInfo] = useState<InfoConcert>({ name: '', description: '', total: 0 });
 
+  const handleSave = async () => {
+
+    try {
+      const response = await fetch( BASE_PATH+'concert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        "ConcertName": concertInfo.name,
+        "TotalSeats": concertInfo.total,
+        "Description": concertInfo.description,
+      }),
+      });
+
+      if (response.ok) {
+        await response.json();
+        alert("Concert saved successfully!");
+        setConcertInfo({ name: '', description: '', total: 0 });
+      } else {
+        console.error("Server error:", response.status);
+        alert("Failed to save concert. Server responded with error.");
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      alert("Failed to save concert. Network error.");
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setConcertInfo(prevState => ({
       ...prevState,
       [name]: name === 'total' ? parseInt(value, 10) || '' : value,
     }));
-    console.log(concertInfo)
   };
 
-  const handleSave = () => {
-    console.log(concertInfo);
-  };
 
   return (
-    <div className="card w-full bg-base-100 shadow-sm rounded">
+     <div className="card w-full bg-base-100 shadow-sm rounded">
         <div className="card-body">
             <h2 className="card-title text-sky-500 text-2xl">Create</h2>
             <div className="card-actions flex justify-between items-center border-t-2 border-gray-100 pt-2">
@@ -52,7 +78,7 @@ const Card = () => {
                               name="total"
                               className="grow" 
                               placeholder="Please input total seat" 
-                              value={concertInfo.total} 
+                              value={concertInfo.total.toString()} // Ensure total is a string for the input value
                               onChange={handleChange}
                             />
                             <CiUser/>
@@ -66,16 +92,16 @@ const Card = () => {
                     <textarea 
                       className="textarea textarea-bordered h-24 rounded" 
                       placeholder="Please Input description"
-                      name="description" // Add a name attribute
-                      value={concertInfo.description} // Controlled input
-                      onChange={handleChange} // Cast to handle textarea
+                      name="description" 
+                      value={concertInfo.description} 
+                      onChange={handleChange}
                     ></textarea>
                 </label>
                 <div></div>
                 <div className="flex flex-row-reverse">
                      <button 
                        className="btn bg-sky-500 text-gray-50 rounded"
-                       onClick={handleSave} // Save on click
+                       onClick={handleSave}
                      >
                         <IoSaveOutline className="text-xl"/>
                         Save
