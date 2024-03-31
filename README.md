@@ -9,7 +9,7 @@ This project provides a web application for reserving a ticket using Nextjs.
 - **1.** Admin Able to create/delete concert
 - **2.** Admin Able to view available concert tickets, reserve total as dashboard
 - **3.** Admin Able to view history reserve
-- 
+
 ## Getting Started
 1. first step to run the development server:
 ```bash
